@@ -1,0 +1,12 @@
+FROM golang:1.17 AS builder
+WORKDIR /go/src
+COPY . .
+RUN go build -o time-checker cmd/time-checker/main.go
+
+FROM alpine:3.15
+WORKDIR /go/bin
+RUN apk --no-cache add tzdata && \
+    cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
+    apk del tzdata
+COPY --from=builder /go/src/time-checker .
+ENTRYPOINT ["./time-checker"]
