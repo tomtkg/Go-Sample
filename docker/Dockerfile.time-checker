@@ -1,13 +1,12 @@
-FROM golang:1.17 AS builder
+FROM golang:alpine3.15 AS builder
+RUN apk --update-cache add tzdata
 WORKDIR /app
 COPY . .
-ARG CGO_ENABLED=0 GOOS=linux GOARCH=amd64
 RUN go build -ldflags '-s -w' cmd/time-checker/main.go
 
-FROM alpine:3.15
+FROM scratch
 WORKDIR /app
-RUN apk --no-cache add tzdata && \
-    cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime && \
-    apk del tzdata
 COPY --from=builder /app/main /
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+ENV TZ=Asia/Tokyo
 ENTRYPOINT ["/main"]
