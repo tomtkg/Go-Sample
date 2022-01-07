@@ -16,7 +16,7 @@ type DateTime struct {
 }
 
 func main() {
-	fmt.Println(time.Now().Format("2006-01-02T15:04:05.000 MST"))
+	fmt.Println(time.Now().Format("2006-01-02T15:04:05.000 JST"))
 	inputData := []DateTime{}
 	getInput(&inputData)
 
@@ -38,21 +38,17 @@ func main() {
 }
 
 func getInput(inputData interface{}) {
+	r := os.Stdin
+	var err error
 	if len(os.Args) > 1 {
-		data, err := os.Open(os.Args[1])
-		if err != nil {
+		if r, err = os.Open(os.Args[1]); err != nil {
 			fmt.Fprintln(os.Stderr, err)
 			os.Exit(1)
 		}
-		if err := json.NewDecoder(data).Decode(inputData); err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
-		}
-	} else {
-		if err := json.NewDecoder(os.Stdin).Decode(inputData); err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
-		}
+	}
+	if err = json.NewDecoder(r).Decode(inputData); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
 	}
 }
 
@@ -86,18 +82,18 @@ func isShorter(a, b DateTime) bool {
 func printFunctionName(f interface{}) {
 	name := runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
 	arr := strings.Split(name, ".")
-	fmt.Fprintln(os.Stdout, arr[len(arr)-1])
+	fmt.Println(arr[len(arr)-1])
 }
 
 func printBoolMatrix(m [][]bool) {
 	for _, v := range m {
 		for _, w := range v {
 			if w {
-				fmt.Fprint(os.Stdout, "T ")
+				fmt.Print("T ")
 			} else {
-				fmt.Fprint(os.Stdout, "F ")
+				fmt.Print("F ")
 			}
 		}
-		fmt.Fprintln(os.Stdout)
+		fmt.Println()
 	}
 }
