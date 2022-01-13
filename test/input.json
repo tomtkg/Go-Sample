@@ -1,5 +1,11 @@
 {
     "intValue": 3,
     "floatValue": 3.14,
-    "stringValue": "pi"
+    "stringValue": "pi",
+    "slice": [1,1,2,3,5,8],
+    "struct": {
+        "hoge": "A",
+        "fuga": true,
+        "piyo": 1e3
+    }
 }
