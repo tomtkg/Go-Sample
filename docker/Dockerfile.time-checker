@@ -6,7 +6,7 @@ RUN go build -ldflags '-s -w' cmd/time-checker/main.go
 
 FROM scratch
 WORKDIR /app
-COPY --from=builder /app/main /
+COPY --from=builder /app/main .
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 ENV TZ=Asia/Tokyo
-ENTRYPOINT ["/main"]
+ENTRYPOINT ["./main"]
